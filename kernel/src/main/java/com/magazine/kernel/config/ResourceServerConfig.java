@@ -1,5 +1,7 @@
 package com.magazine.kernel.config;
 
+import com.magazine.kernel.utils.CustomJwtConverter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -18,7 +20,10 @@ import java.util.stream.Stream;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class ResourceServerConfig {
+
+    private final CustomJwtConverter converter;
 
     @Bean
     public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
@@ -29,7 +34,12 @@ public class ResourceServerConfig {
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
-                .oauth2ResourceServer(oauth -> oauth
+                .oauth2ResourceServer(oauth -> oauth.jwt(
+                        jwt -> jwt.jwtAuthenticationConverter(converter)
+                ))
+
+
+                /*(oauth -> oauth
                         .jwt(jwtConfigurer -> {
                             JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
                             converter.setPrincipalClaimName("preferred_username");
@@ -43,7 +53,7 @@ public class ResourceServerConfig {
                             converter.setJwtGrantedAuthoritiesConverter(token ->
                                 Stream.concat(grantedAuthoritiesConverter.convert(token).stream(),
                                         customGrantedAuthoritiesConverter.convert(token).stream()).toList());
-                        }))
+                        }))*/
                 .build();
     }
 }
