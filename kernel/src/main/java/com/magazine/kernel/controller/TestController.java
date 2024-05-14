@@ -18,20 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/test")
 public class TestController {
-
-    @GetMapping("/authorities")
-    public Map<String,Object> getPrincipalInfo(JwtAuthenticationToken token){
-        Collection<String> authorities = token.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        Map<String, Object> info = new HashMap<>();
-        info.put("name", token.getName());
-        info.put("authorities", authorities);
-        info.put("tokenAttributes", token.getTokenAttributes());
-        return info;
-    }
+    
     @GetMapping("/access")
     public TestResponse getAccess(Principal principal){
         TestResponse response = new TestResponse();
