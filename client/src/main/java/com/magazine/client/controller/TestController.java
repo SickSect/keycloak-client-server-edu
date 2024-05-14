@@ -66,6 +66,16 @@ public class TestController {
         return "test";
     }
 
+    @GetMapping("/test/write")
+    public String testWrite(Model model){
+        model.addAttribute("testResponse",
+                this.client.get()
+                        .uri("/kernel/test/write")
+                        .retrieve()
+                        .body(TestResponse.class));
+        return "test";
+    }
+
     @ModelAttribute("principal")
     public Principal principal(Principal principal){
         return principal;

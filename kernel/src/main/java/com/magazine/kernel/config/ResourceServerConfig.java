@@ -29,31 +29,14 @@ public class ResourceServerConfig {
     public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/test/read").hasRole("READ")
-                        .requestMatchers("/test/write").hasRole("WRITE")
+                        .requestMatchers("/test/read").hasRole("client_user")
+                        .requestMatchers("/test/write").hasRole("client_admin")
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth -> oauth.jwt(
                         jwt -> jwt.jwtAuthenticationConverter(converter)
                 ))
-
-
-                /*(oauth -> oauth
-                        .jwt(jwtConfigurer -> {
-                            JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-                            converter.setPrincipalClaimName("preferred_username");
-                            jwtConfigurer.jwtAuthenticationConverter(converter);
-
-                            JwtGrantedAuthoritiesConverter customGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-                            customGrantedAuthoritiesConverter.setAuthorityPrefix("");
-                            customGrantedAuthoritiesConverter.setAuthoritiesClaimName("groups");
-                            JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-
-                            converter.setJwtGrantedAuthoritiesConverter(token ->
-                                Stream.concat(grantedAuthoritiesConverter.convert(token).stream(),
-                                        customGrantedAuthoritiesConverter.convert(token).stream()).toList());
-                        }))*/
                 .build();
     }
 }
